@@ -326,18 +326,9 @@ public class TelecomServiceImpl {
             synchronized (mLock) {
                 try {
                     Log.startSession("TSI.gUSOPA", Log.getPackageAbbreviation(callingPackage));
-                    try {
-                        if (!isDialerOrPrivileged(callingPackage, "getUserSelectedOutgoingPhoneAccount")) {
-                            throw new SecurityException("Only the default dialer, or caller with "
-                                    + "READ_PRIVILEGED_PHONE_STATE or "
-                                    + "READ_PRIVILEGED_PHONE_STATE_ANDROID_AUTO can call this method.");
-                        }
-                    } catch (SecurityException se) {
-                        String perm = android.Manifest.permission.READ_PRIVILEGED_PHONE_STATE_ANDROID_AUTO;
-                        /** @see android.telecom.TelecomManager#getUserSelectedOutgoingPhoneAccount */
-                        if (mContext.checkCallingPermission(perm) != PackageManager.PERMISSION_GRANTED) {
-                            throw se;
-                        }
+                    if (!isDialerOrPrivileged(callingPackage, "getDefaultOutgoingPhoneAccount")) {
+                        throw new SecurityException("Only the default dialer, or caller with "
+                                + "READ_PRIVILEGED_PHONE_STATE can call this method.");
                     }
                     final UserHandle callingUserHandle = Binder.getCallingUserHandle();
                     return mPhoneAccountRegistrar.getUserSelectedOutgoingPhoneAccount(
